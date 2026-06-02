@@ -1,6 +1,6 @@
 {
   "name": "@zhoudqa/naruto",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Multi-agent requirements development pipeline for OpenCode",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
