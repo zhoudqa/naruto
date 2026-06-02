@@ -1,7 +1,7 @@
 # Naruto — 多代理需求开发流水线
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)]()
+[![npm version](https://img.shields.io/npm/v/@zhoudqa/naruto)]()
 [![OpenCode Plugin](https://img.shields.io/badge/OpenCode-Plugin-purple)]()
 
 **Naruto** 是一款 OpenCode 插件，实现了一个多代理（Multi-Agent）需求开发流水线。它能将原始需求自动转化为生产就绪的代码，全程由 7 个专业化 AI 代理协作完成。
@@ -27,34 +27,45 @@
 - [OpenCode](https://opencode.ai) 已安装并配置
 - [Bun](https://bun.sh) 运行时（推荐 1.3+）
 
-### 步骤
+### 远程安装（推荐）
 
-1. **克隆项目到本地**
+```bash
+bun add @zhoudqa/naruto
+```
 
-   ```bash
-   git clone <repository-url> naruto
-   cd naruto
-   ```
+然后在 OpenCode 配置（`~/.config/opencode/config.json` 或项目 `.opencode/config.json`）中添加：
 
-2. **安装依赖**
+```json
+"plugin": ["@zhoudqa/naruto"]
+```
 
-   ```bash
-   bun install
-   ```
+### 本地开发
 
-3. **构建项目**
+如需修改 Naruto 源码，请使用以下方式：
 
-   ```bash
-   bun run build
-   ```
+```bash
+git clone git@github.com:zhoudqa/naruto.git
+cd naruto
+bun install
+bun run build
+```
 
-4. **配置 OpenCode 加载插件**
+然后在 OpenCode 配置中将插件路径指向本地构建产物：
 
-   在 OpenCode 的插件配置中添加 Naruto 的路径。具体方式取决于你的 OpenCode 配置方式，通常是将插件路径指向 `dist/index.js`。
+```json
+"plugin": ["./naruto/dist/index.js"]
+```
 
-5. **（可选）创建配置文件**
+### 发布新版本
 
-   在项目根目录创建 `.opencode/naruto.jsonc` 进行个性化配置（详见[配置指南](#配置参考)）。
+```bash
+npm version patch   # 小改版：0.1.0 → 0.1.1
+npm version minor   # 功能新增：0.1.0 → 0.2.0
+npm version major   # 大版本：0.1.0 → 1.0.0
+git push --follow-tags
+```
+
+推送 tag 后，GitHub Actions 会自动构建并发布到 npm。
 
 ---
 
