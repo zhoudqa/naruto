@@ -35,7 +35,18 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish to npm
-        run: npm publish
+      - name: Create .npmrc
+        run: |
+          echo "@zhoudqa:registry=https://registry.npmjs.org/" >> ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Show npm publish error (debug)
+        run: npm publish --dry-run 2>&1 || true
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
