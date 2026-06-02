@@ -1,7 +1,10 @@
 import { existsSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
+import { homedir } from "node:os"
 
 const DEFAULT_ARTIFACT_DIR = ".naruto"
+
+const USER_KNOWLEDGE_DIR = join(homedir(), ".naruto", "domain-knowledge")
 
 export function getArtifactDir(
   projectDir: string,
@@ -19,20 +22,20 @@ export function getArtifactPath(
   return join(getArtifactDir(projectDir, artifactDir), filename)
 }
 
-export function getDomainKnowledgeDir(
-  projectDir: string,
-  artifactDir?: string,
-): string {
-  const base = artifactDir ?? DEFAULT_ARTIFACT_DIR
-  return join(projectDir, base, "domain-knowledge")
+export function getDomainKnowledgeDir(): string {
+  return USER_KNOWLEDGE_DIR
 }
 
 export function getDomainKnowledgePath(
-  projectDir: string,
+  _projectDir: string,
   domain: string,
-  artifactDir?: string,
+  _artifactDir?: string,
 ): string {
-  return join(getDomainKnowledgeDir(projectDir, artifactDir), `${domain}.md`)
+  return join(USER_KNOWLEDGE_DIR, `${domain}.md`)
+}
+
+export function ensureDomainKnowledgeDir(): void {
+  mkdirSync(USER_KNOWLEDGE_DIR, { recursive: true })
 }
 
 export function getPipelineStatePath(

@@ -64,7 +64,7 @@ For natural language or semi-structured input, conduct a focused clarification d
 After producing the requirement summary, identify the business domain:
 
 1. Infer the business domain from the requirement (e.g., "payment", "auth", "order", "notification", "user-management").
-2. Read the \`.naruto/domain-knowledge/\` directory to find existing domain knowledge files.
+2. Read the \`~/.naruto/domain-knowledge/\` directory to find existing domain knowledge files.
 3. Present to the user: "This requirement appears to be in the **{domain}** domain. Existing domain knowledge files: {list}. Confirm or specify a different domain."
 4. If the user confirms or provides a domain, update \`PipelineState.domain\`.
 5. If the user says "none" or "no domain", skip domain analysis entirely.
@@ -84,8 +84,8 @@ Dispatch subagents in sequence using the task tool. Each subagent receives conte
 
 2. **domain-analysis** - Dispatch domain-analyst subagent (if a domain was confirmed)
    - Provide the requirement summary, domain name, context.md content.
-   - If existing domain knowledge exists (\`.naruto/domain-knowledge/<domain>.md\`), include it for incremental update.
-   - The domain-analyst writes/updates \`.naruto/domain-knowledge/<domain>.md\`.
+    - If existing domain knowledge exists (\`~/.naruto/domain-knowledge/<domain>.md\`), include it for incremental update.
+    - The domain-analyst writes/updates \`~/.naruto/domain-knowledge/<domain>.md\`.
    - Wait for completion before proceeding.
    - **Remote sync**: If \`knowledge_sync_tool\` is configured in naruto config, call the MCP tool to sync the updated domain knowledge:
      - Read the updated file content.
@@ -193,7 +193,7 @@ When a subagent fails or produces unsatisfactory output:
 
 **Artifact locations:**
 - \`.naruto/artifacts/context.md\` - Codebase context (explorer output)
-- \`.naruto/domain-knowledge/<domain>.md\` - Domain knowledge (domain-analyst output)
+- \`~/.naruto/domain-knowledge/<domain>.md\` - Domain knowledge (domain-analyst output)
 - \`.naruto/artifacts/prd.md\` - Product Requirements Document
 - \`.naruto/artifacts/tech-design.md\` - Technical Design Document
 - \`.naruto/artifacts/review.md\` - Code Review Report

@@ -16,7 +16,7 @@ clarify → explore → domain-analysis → prd → tech-design → code → tes
 
 Occurs at the end of the **clarify** stage:
 1. Coordinator analyzes the requirement and infers a business domain.
-2. Lists all existing domain knowledge files under `.naruto/domain-knowledge/`.
+2. Lists all existing domain knowledge files under `~/.naruto/domain-knowledge/`.
 3. Presents the inferred domain + existing domains for user confirmation.
 4. Confirmed domain name is written to `PipelineState.domain`.
 
@@ -25,20 +25,20 @@ Occurs at the end of the **clarify** stage:
 **First run (no existing knowledge):**
 ```
 explore [no prior knowledge] → context.md
-domain-analysis [context.md] → domain-knowledge/<domain>.md
+domain-analysis [context.md] → ~/.naruto/domain-knowledge/<domain>.md
 ```
 
 **Subsequent runs (existing knowledge):**
 ```
 explore [existing domain knowledge] → context.md (targeted, deeper)
-domain-analysis [context.md + old knowledge] → domain-knowledge/<domain>.md (incremental update)
+domain-analysis [context.md + old knowledge] → ~/.naruto/domain-knowledge/<domain>.md (incremental update)
 ```
 
 **Downstream consumption:** prd, tech-design, code, review stages receive domain knowledge automatically via `context-builder.ts` STAGE_DEPENDENCIES.
 
 ## Domain Knowledge File Format
 
-Each business domain stored as `.naruto/domain-knowledge/<domain>.md`. Cross-system perspective with Mermaid diagrams.
+Each business domain stored as `~/.naruto/domain-knowledge/<domain>.md`. Cross-system perspective with Mermaid diagrams.
 
 ```markdown
 # Domain Knowledge: payment
@@ -181,7 +181,7 @@ New `naruto-domain-analyst` subagent.
 
 **Responsibilities:**
 1. Read `context.md` from explore stage.
-2. Read existing `.naruto/domain-knowledge/<domain>.md` if present.
+2. Read existing `~/.naruto/domain-knowledge/<domain>.md` if present.
 3. Analyze cross-system knowledge relevant to the current requirement.
 4. Produce or incrementally update the domain knowledge file.
 5. If `knowledge_sync_tool` is configured, coordinator calls the MCP tool to sync to remote.
@@ -276,7 +276,7 @@ const STAGE_DEPENDENCIES = {
 }
 ```
 
-`domain-knowledge` is a special dependency resolved to `.naruto/domain-knowledge/<state.domain>.md` in `buildSubagentPrompt`.
+`domain-knowledge` is a special dependency resolved to `~/.naruto/domain-knowledge/<state.domain>.md` in `buildSubagentPrompt`.
 
 ## Remote Sync
 

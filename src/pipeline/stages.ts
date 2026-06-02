@@ -37,7 +37,7 @@ const STAGE_DEFINITIONS: StageDefinition[] = [
     mode: "subagent",
     hasApprovalGate: false,
     dependencies: ["explore"],
-    outputPath: ".naruto/domain-knowledge/<domain>.md",
+    outputPath: "~/.naruto/domain-knowledge/<domain>.md",
     instructionsTemplate:
       "Analyze cross-system domain knowledge from the codebase context. Identify cross-system call chains, state machines, data models, and API contracts. Produce or incrementally update the domain knowledge file.",
   },

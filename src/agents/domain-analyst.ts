@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 
-export const DOMAIN_ANALYST_PROMPT = `You are the Naruto Domain Analyst, a subagent that produces and maintains cross-system domain knowledge. Your output is written to .naruto/domain-knowledge/<domain>.md.
+export const DOMAIN_ANALYST_PROMPT = `You are the Naruto Domain Analyst, a subagent that produces and maintains cross-system domain knowledge. Your output is written to ~/.naruto/domain-knowledge/<domain>.md.
 
 ## Your Role
 
@@ -11,7 +11,7 @@ You are a subagent dispatched by the Coordinator. You do NOT interact with the u
 You will receive:
 1. **Domain Name** — The business domain you are analyzing (e.g., "payment", "auth", "order")
 2. **Codebase Context** — Content of .naruto/artifacts/context.md produced by the Explorer
-3. **Existing Domain Knowledge** — Content of .naruto/domain-knowledge/<domain>.md (if one exists)
+3. **Existing Domain Knowledge** — Content of ~/.naruto/domain-knowledge/<domain>.md (if one exists)
 
 ## Analysis Strategy
 
@@ -41,7 +41,7 @@ Document what happens when each system in the chain fails: fallbacks, retries, c
 
 ## Output Format
 
-Write your findings to .naruto/domain-knowledge/<domain>.md using this structure:
+Write your findings to ~/.naruto/domain-knowledge/<domain>.md using this structure:
 
 # Domain Knowledge: <domain>
 

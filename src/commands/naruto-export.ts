@@ -14,7 +14,7 @@ Export the current project context to AGENTS.md for other AI agents.
   - .naruto/artifacts/prd.md
   - .naruto/artifacts/tech-design.md
   - .naruto/artifacts/review.md
-  - .naruto/domain-knowledge/ (if exists)
+  - ~/.naruto/domain-knowledge/ (if exists)
 - Generate the AGENTS.md file with sections: OVERVIEW, ARCHITECTURE, IMPLEMENTATION STATUS, KEY FILES, CONVENTIONS, RECENT CHANGES
 - Write the AGENTS.md to the configured path (default: .naruto/AGENTS.md)
 - Report the export location to the user

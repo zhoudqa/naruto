@@ -13,7 +13,7 @@
 - **端到端自动化** — 从需求澄清到代码审查，全流程自动推进
 - **8 个专业化代理** — 每个阶段由专精该领域的 AI 代理负责
 - **审批关卡** — PRD 和技术设计阶段支持人工审核，确保方向正确
-- **领域知识积累** — 自动分析跨系统调用链、状态机、数据模型并积累为可复用的 Domain Knowledge
+- **[Compound Knowledge](#compound-knowledge复合领域知识)** — 自动分析跨系统调用链、状态机、数据模型并积累为可复用的领域知识文件
 - **状态持久化** — 流水线状态持久化到磁盘，支持断点恢复
 - **灵活配置** — 可为每个代理指定不同的模型和参数，优化成本与质量
 - **渐进式执行** — 支持运行完整流水线，也支持单独执行某个阶段
@@ -126,6 +126,63 @@ Naruto 的流水线包含 8 个顺序执行的阶段：
 
 ---
 
+## Compound Knowledge（复合领域知识）
+
+Naruto 的 **Compound Knowledge** 机制能在每次流水线执行中自动分析跨系统的调用链、状态机、数据模型，并将分析结果沉淀为可复用的领域知识文件，实现知识跨流水线持续积累。
+
+### 工作原理
+
+```mermaid
+flowchart LR
+    A[Explore 发现领域边界] --> B[Domain Analyst 分析]
+    B --> C{已有知识文件?}
+    C -->|有| D[增量合并更新]
+    C -->|无| E[创建新文件]
+    D --> F[下游代理消费]
+    E --> F
+    F --> G[远程同步<br>MCP Tool]
+```
+
+1. **自动发现** — Explorer 代理识别当前需求所属的业务域
+2. **深度分析** — Domain Analyst 代理分析代码库中的跨系统调用链、状态迁移、数据模型及业务规则
+3. **增量积累** — 新分析结果与已有 `~/.naruto/domain-knowledge/<domain>.md` 文件合并，只增不减
+4. **上下文注入** — 后续流水线的 PRD Writer / Tech Designer / Coder 自动加载相关知识，确保设计一致性
+5. **远程同步（可选）** — 支持通过 MCP Tool 将知识同步到外部知识库（Wiki、Notion 等）
+
+### 包含的内容
+
+每个 Domain Knowledge 文件涵盖以下维度：
+
+| 维度 | 说明 | 示例 |
+|------|------|------|
+| **调用链** | 跨服务/模块的关键调用路径 | `OrderService → PaymentGateway → Ledger` |
+| **状态机** | 业务实体的生命周期与状态转换规则 | `订单: PENDING → PAID → SHIPPED → DELIVERED` |
+| **数据模型** | 核心实体及其关系 | `User 1:N Order N:1 Payment` |
+| **业务规则** | 领域特定的约束和逻辑 | `优惠券不可与秒杀叠加使用` |
+| **集成点** | 外部系统接口与协议 | `支付网关 REST API v3, HMAC 签名` |
+| **边界上下文** | 限界上下文划分与上下游依赖 | `库存上下文 依赖 商品上下文` |
+
+### 文件存储
+
+```
+~/.naruto/domain-knowledge/
+├── payment.md          # 支付领域知识
+├── auth.md             # 认证领域知识
+├── order.md            # 订单领域知识
+└── notification.md     # 通知领域知识
+```
+
+### 相关配置
+
+```jsonc
+{
+  // Domain Knowledge 远程同步 MCP tool 名称（可选）
+  "knowledge_sync_tool": "wiki_upload"
+}
+```
+
+---
+
 ## 配置参考
 
 在项目根目录的 `.opencode/naruto.jsonc` 中进行配置（JSONC 格式，支持注释）：
@@ -205,7 +262,7 @@ Naruto 的流水线包含 8 个顺序执行的阶段：
 | `.naruto/artifacts/prd.md` | 产品需求文档（PRD Writer 输出） |
 | `.naruto/artifacts/tech-design.md` | 技术设计文档（Tech Designer 输出） |
 | `.naruto/artifacts/review.md` | 代码审查报告（Reviewer 输出） |
-| `.naruto/domain-knowledge/<domain>.md` | 领域知识文件（Domain Analyst 输出，跨系统调用链/状态机/数据模型） |
+| `~/.naruto/domain-knowledge/<domain>.md` | 领域知识文件（Domain Analyst 输出，跨系统调用链/状态机/数据模型） |
 | `.naruto/AGENTS.md` | 供 AI 代理使用的项目上下文摘要（自动导出） |
 
 ---

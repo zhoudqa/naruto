@@ -69,7 +69,7 @@ const STAGE_DEPENDENCIES: Record<PipelineStage, ArtifactDependency[]> = {
 const STAGE_OUTPUT: Record<PipelineStage, string> = {
   clarify: "A structured requirement summary as plain text.",
   explore: "Write your findings to .naruto/artifacts/context.md",
-  "domain-analysis": "Write the domain knowledge file to .naruto/domain-knowledge/<domain>.md",
+  "domain-analysis": "Write the domain knowledge file to ~/.naruto/domain-knowledge/<domain>.md",
   prd: "Write the PRD to .naruto/artifacts/prd.md",
   "tech-design": "Write the technical design to .naruto/artifacts/tech-design.md",
   code: "Write source code files in the project directory following the technical design.",
