@@ -6,4 +6,5 @@ export { createTechDesignerAgent, TECH_DESIGNER_PROMPT } from "./tech-designer.j
 export { createCoderAgent, CODER_PROMPT } from "./coder.js"
 export { createTesterAgent, TESTER_PROMPT } from "./tester.js"
 export { createReviewerAgent, REVIEWER_PROMPT } from "./reviewer.js"
+export { createDomainAnalystAgent, DOMAIN_ANALYST_PROMPT } from "./domain-analyst.js"
 export type { AgentMode, AgentFactory, PipelineAgentName } from "./types.js"

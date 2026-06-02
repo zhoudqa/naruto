@@ -19,6 +19,22 @@ export function getArtifactPath(
   return join(getArtifactDir(projectDir, artifactDir), filename)
 }
 
+export function getDomainKnowledgeDir(
+  projectDir: string,
+  artifactDir?: string,
+): string {
+  const base = artifactDir ?? DEFAULT_ARTIFACT_DIR
+  return join(projectDir, base, "domain-knowledge")
+}
+
+export function getDomainKnowledgePath(
+  projectDir: string,
+  domain: string,
+  artifactDir?: string,
+): string {
+  return join(getDomainKnowledgeDir(projectDir, artifactDir), `${domain}.md`)
+}
+
 export function getPipelineStatePath(
   projectDir: string,
   artifactDir?: string,

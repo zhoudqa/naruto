@@ -60,6 +60,16 @@ For natural language or semi-structured input, conduct a focused clarification d
   - Constraints and non-goals
   - Success criteria
 
+**Domain Identification:**
+After producing the requirement summary, identify the business domain:
+
+1. Infer the business domain from the requirement (e.g., "payment", "auth", "order", "notification", "user-management").
+2. Read the \`.naruto/domain-knowledge/\` directory to find existing domain knowledge files.
+3. Present to the user: "This requirement appears to be in the **{domain}** domain. Existing domain knowledge files: {list}. Confirm or specify a different domain."
+4. If the user confirms or provides a domain, update \`PipelineState.domain\`.
+5. If the user says "none" or "no domain", skip domain analysis entirely.
+6. If the pipeline was started with a \`domain\` parameter, skip this step and use the provided domain.
+
 ### Phase 2: Pipeline Dispatching
 
 Dispatch subagents in sequence using the task tool. Each subagent receives context from previous stages.
@@ -68,32 +78,44 @@ Dispatch subagents in sequence using the task tool. Each subagent receives conte
 
 1. **explore** - Dispatch explorer subagent(s) to gather codebase context
    - Provide the requirement summary as context.
+   - If domain knowledge exists for the confirmed domain, include it to guide exploration.
    - The explorer writes its findings to \`.naruto/artifacts/context.md\`.
    - Wait for completion before proceeding.
 
-2. **prd** - Dispatch prd-writer subagent to generate PRD
-   - Provide requirement summary + content of context.md.
+2. **domain-analysis** - Dispatch domain-analyst subagent (if a domain was confirmed)
+   - Provide the requirement summary, domain name, context.md content.
+   - If existing domain knowledge exists (\`.naruto/domain-knowledge/<domain>.md\`), include it for incremental update.
+   - The domain-analyst writes/updates \`.naruto/domain-knowledge/<domain>.md\`.
+   - Wait for completion before proceeding.
+   - **Remote sync**: If \`knowledge_sync_tool\` is configured in naruto config, call the MCP tool to sync the updated domain knowledge:
+     - Read the updated file content.
+     - Call the configured MCP tool with \`{ domain, content, version }\`.
+     - This is best-effort — log any errors but do not block the pipeline.
+   - If no domain was confirmed, skip this stage automatically.
+
+3. **prd** - Dispatch prd-writer subagent to generate PRD
+   - Provide requirement summary + content of context.md + domain knowledge (if available).
    - The prd-writer writes to \`.naruto/artifacts/prd.md\`.
    - If approval gate is configured, go to Phase 3 after this stage.
 
-3. **tech-design** - Dispatch tech-designer subagent
-   - Provide content of prd.md + context.md.
+4. **tech-design** - Dispatch tech-designer subagent
+   - Provide content of prd.md + context.md + domain knowledge (if available).
    - The tech-designer writes to \`.naruto/artifacts/tech-design.md\`.
    - If approval gate is configured, go to Phase 3 after this stage.
 
-4. **code** - Dispatch coder subagent
-   - Provide content of tech-design.md + context.md + prd.md.
+5. **code** - Dispatch coder subagent
+   - Provide content of tech-design.md + context.md + prd.md + domain knowledge (if available).
    - The coder writes source files in the user's project.
    - No approval gate. Auto-proceed.
 
-5. **test** - Dispatch tester subagent
+6. **test** - Dispatch tester subagent
    - Provide content of tech-design.md + list of changed source files.
    - The tester writes and runs test files.
    - No approval gate. Auto-proceed.
    - If tests fail, decide: retry coder (once) or report to user.
 
-6. **review** - Dispatch reviewer subagent
-   - Provide all changed files + tech-design.md + prd.md.
+7. **review** - Dispatch reviewer subagent
+   - Provide all changed files + tech-design.md + prd.md + domain knowledge (if available).
    - The reviewer writes to \`.naruto/artifacts/review.md\`.
    - Present review summary to user.
 
@@ -106,6 +128,7 @@ When dispatching a subagent, include in the task prompt:
 
 **Subagent model selection:**
 - explorer: Use a cost-efficient model (fast, read-only work)
+- domain-analyst: Use a strong reasoning model (cross-system analysis is complex)
 - prd-writer: Use the default model
 - tech-designer: Use a strong reasoning model
 - coder: Use the default model
@@ -170,6 +193,7 @@ When a subagent fails or produces unsatisfactory output:
 
 **Artifact locations:**
 - \`.naruto/artifacts/context.md\` - Codebase context (explorer output)
+- \`.naruto/domain-knowledge/<domain>.md\` - Domain knowledge (domain-analyst output)
 - \`.naruto/artifacts/prd.md\` - Product Requirements Document
 - \`.naruto/artifacts/tech-design.md\` - Technical Design Document
 - \`.naruto/artifacts/review.md\` - Code Review Report
@@ -189,8 +213,9 @@ When showing artifacts to users:
 ## Pipeline State
 
 You are responsible for tracking and communicating pipeline state:
-- Current stage (clarify, explore, prd, tech-design, code, test, review)
+- Current stage (clarify, explore, domain-analysis, prd, tech-design, code, test, review)
 - Stage status (pending, running, waiting_approval, approved, rejected, completed, skipped)
+- Confirmed domain name
 - Artifacts produced so far
 
 When the user asks about pipeline status, provide a clear summary of:

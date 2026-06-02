@@ -10,6 +10,7 @@ export type AgentFactory = {
 export type PipelineAgentName =
   | "coordinator"
   | "explorer"
+  | "domain-analyst"
   | "prd-writer"
   | "tech-designer"
   | "coder"

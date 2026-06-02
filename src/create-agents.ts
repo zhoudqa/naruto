@@ -9,6 +9,7 @@ import {
   createCoderAgent,
   createTesterAgent,
   createReviewerAgent,
+  createDomainAnalystAgent,
 } from "./agents/index.js"
 import { log } from "./shared/logger.js"
 
@@ -23,6 +24,7 @@ const WORKER_FACTORIES: Record<
   (model: string, temperature?: number) => AgentConfig
 > = {
   explorer: createExplorerAgent,
+  "domain-analyst": createDomainAnalystAgent,
   "prd-writer": createPrdWriterAgent,
   "tech-designer": createTechDesignerAgent,
   coder: createCoderAgent,

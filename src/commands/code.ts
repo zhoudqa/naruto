@@ -17,7 +17,8 @@ You are the Naruto pipeline Coordinator. Run the code implementation stage.
 - Read the existing tech design from .naruto/artifacts/tech-design.md
 - Read the existing PRD from .naruto/artifacts/prd.md
 - Read the existing codebase context from .naruto/artifacts/context.md
-- Use the pipeline_run tool with startStage set to "code" and skipStages including "clarify", "explore", "prd", "tech-design", "test", "review"
+- Read any existing domain knowledge from .naruto/domain-knowledge/ if available
+- Use the pipeline_run tool with startStage set to "code" and skipStages including "clarify", "explore", "domain-analysis", "prd", "tech-design", "test", "review"
 - This runs only the code stage
 - Spawn the coder subagent with the full context
 - Do NOT proceed to testing or review stages

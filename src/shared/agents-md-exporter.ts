@@ -74,6 +74,7 @@ function buildImplementationStatusSection(
   }> = [
     { key: "clarify", label: "Clarification" },
     { key: "explore", label: "Exploration" },
+    { key: "domain-analysis", label: "Domain Analysis" },
     { key: "prd", label: "PRD" },
     { key: "tech-design", label: "Technical Design" },
     { key: "code", label: "Coding" },

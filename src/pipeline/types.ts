@@ -1,6 +1,7 @@
 export type PipelineStage =
   | "clarify"
   | "explore"
+  | "domain-analysis"
   | "prd"
   | "tech-design"
   | "code"
@@ -49,6 +50,7 @@ export interface PipelineState {
   input: PipelineInput
   currentStage: PipelineStage
   stages: Record<PipelineStage, StageStatus>
+  domain?: string
   artifacts: PipelineArtifacts
   config: PipelineConfig
   rejectionFeedback?: string
@@ -59,6 +61,7 @@ export interface PipelineState {
 export const PIPELINE_STAGES: readonly PipelineStage[] = [
   "clarify",
   "explore",
+  "domain-analysis",
   "prd",
   "tech-design",
   "code",

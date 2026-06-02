@@ -35,6 +35,7 @@ export function createPipeline(
   config: NarutoConfig,
   projectDir: string,
   startStage?: PipelineStage,
+  domain?: string,
 ): PipelineState {
   const effectiveStart = startStage ?? "clarify"
   const stages = initialStages(effectiveStart, config.skip_stages)
@@ -47,6 +48,7 @@ export function createPipeline(
     input,
     currentStage: effectiveStart,
     stages,
+    domain,
     artifacts: {},
     config: {
       startStage: effectiveStart,

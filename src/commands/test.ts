@@ -15,7 +15,7 @@ You are the Naruto pipeline Coordinator. Run the test stage.
 ## Instructions
 - Read the existing tech design from .naruto/artifacts/tech-design.md
 - Read pipeline state to identify source files from the code stage
-- Use the pipeline_run tool with startStage set to "test" and skipStages including "clarify", "explore", "prd", "tech-design", "code", "review"
+- Use the pipeline_run tool with startStage set to "test" and skipStages including "clarify", "explore", "domain-analysis", "prd", "tech-design", "code", "review"
 - This runs only the test stage
 - Spawn the tester subagent with tech design context and source file list
 - Do NOT proceed to the review stage

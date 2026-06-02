@@ -15,6 +15,7 @@ export const NarutoConfigSchema = z.object({
       z.enum([
         "clarify",
         "explore",
+        "domain-analysis",
         "prd",
         "tech-design",
         "code",
@@ -27,6 +28,7 @@ export const NarutoConfigSchema = z.object({
   artifact_dir: z.string().default(".naruto"),
   agents_md_path: z.string().default(".naruto/AGENTS.md"),
   agents_md_auto_export: z.boolean().default(true),
+  knowledge_sync_tool: z.string().optional(),
 })
 
 export type NarutoConfig = z.infer<typeof NarutoConfigSchema>
@@ -38,4 +40,5 @@ export const NARUTO_CONFIG_DEFAULTS: NarutoConfig = {
   artifact_dir: ".naruto",
   agents_md_path: ".naruto/AGENTS.md",
   agents_md_auto_export: true,
+  knowledge_sync_tool: undefined,
 }

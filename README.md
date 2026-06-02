@@ -11,8 +11,9 @@
 ## 特性一览
 
 - **端到端自动化** — 从需求澄清到代码审查，全流程自动推进
-- **7 个专业化代理** — 每个阶段由专精该领域的 AI 代理负责
+- **8 个专业化代理** — 每个阶段由专精该领域的 AI 代理负责
 - **审批关卡** — PRD 和技术设计阶段支持人工审核，确保方向正确
+- **领域知识积累** — 自动分析跨系统调用链、状态机、数据模型并积累为可复用的 Domain Knowledge
 - **状态持久化** — 流水线状态持久化到磁盘，支持断点恢复
 - **灵活配置** — 可为每个代理指定不同的模型和参数，优化成本与质量
 - **渐进式执行** — 支持运行完整流水线，也支持单独执行某个阶段
@@ -85,9 +86,9 @@ Naruto 注册了以下 OpenCode 斜杠命令：
 
 | 命令 | 说明 |
 |------|------|
-| `/develop` | 运行完整流水线：clarify → explore → prd → tech-design → code → test → review |
-| `/prd` | 仅生成 PRD（运行 explore + prd 阶段） |
-| `/tech-design` | 仅生成技术设计（运行 explore + tech-design 阶段） |
+| `/develop` | 运行完整流水线：clarify → explore → domain-analysis → prd → tech-design → code → test → review |
+| `/prd` | 仅生成 PRD（运行 explore + domain-analysis + prd 阶段） |
+| `/tech-design` | 仅生成技术设计（运行 explore + domain-analysis + tech-design 阶段） |
 | `/code` | 仅编码实现（需先有 PRD 和技术设计） |
 | `/test` | 仅编写并运行测试（需先有技术设计和代码） |
 | `/review` | 仅执行代码审查（需先有 PRD、技术设计和代码） |
@@ -97,12 +98,13 @@ Naruto 注册了以下 OpenCode 斜杠命令：
 
 ## 流水线阶段
 
-Naruto 的流水线包含 7 个顺序执行的阶段：
+Naruto 的流水线包含 8 个顺序执行的阶段：
 
 | 阶段 | 代理 | 说明 | 审批关卡 |
 |------|------|------|----------|
-| **Clarify** | Coordinator | 通过对话澄清需求，生成结构化需求摘要 | ❌ |
-| **Explore** | Explorer | 只读探索代码库，收集架构、模式、约定等上下文 | ❌ |
+| **Clarify** | Coordinator | 通过对话澄清需求，生成结构化需求摘要，识别业务域 | ❌ |
+| **Explore** | Explorer | 只读探索代码库，收集架构、模式、约定等上下文（可消费已有 Domain Knowledge） | ❌ |
+| **Domain Analysis** | Domain Analyst | 分析跨系统调用链、状态机、数据模型，生成/更新 Domain Knowledge 文件 | ❌ |
 | **PRD** | PRD Writer | 编写产品需求文档，包含用户故事、验收标准 | ✅ 可配置 |
 | **Tech Design** | Tech Designer | 设计技术方案，包含架构、API、数据模型、文件级实现计划 | ✅ 可配置 |
 | **Code** | Coder | 根据技术设计编写生产级代码 | ❌ |
@@ -131,6 +133,10 @@ Naruto 的流水线包含 7 个顺序执行的阶段：
       "model": "gpt-4o-mini",     // 使用轻量模型节约成本
       "temperature": 0.2
     },
+    "domain-analyst": {
+      "model": "gpt-4o",          // 跨系统分析使用强模型
+      "temperature": 0.3
+    },
     "tech-designer": {
       "model": "gpt-4o",          // 使用强推理模型保证设计质量
       "temperature": 0.3
@@ -147,7 +153,10 @@ Naruto 的流水线包含 7 个顺序执行的阶段：
   "agents_md_path": ".naruto/AGENTS.md",
 
   // 审查完成后自动导出 AGENTS.md
-  "agents_md_auto_export": true
+  "agents_md_auto_export": true,
+
+  // Domain Knowledge 远程同步 MCP tool 名称（可选）
+  "knowledge_sync_tool": "wiki_upload"
 }
 ```
 
@@ -165,6 +174,7 @@ Naruto 的流水线包含 7 个顺序执行的阶段：
 
 - `coordinator` — 主协调器
 - `explorer` — 代码库探察器
+- `domain-analyst` — 领域知识分析师
 - `prd-writer` — PRD 编写器
 - `tech-designer` — 技术设计师
 - `coder` — 编码器
@@ -184,6 +194,7 @@ Naruto 的流水线包含 7 个顺序执行的阶段：
 | `.naruto/artifacts/prd.md` | 产品需求文档（PRD Writer 输出） |
 | `.naruto/artifacts/tech-design.md` | 技术设计文档（Tech Designer 输出） |
 | `.naruto/artifacts/review.md` | 代码审查报告（Reviewer 输出） |
+| `.naruto/domain-knowledge/<domain>.md` | 领域知识文件（Domain Analyst 输出，跨系统调用链/状态机/数据模型） |
 | `.naruto/AGENTS.md` | 供 AI 代理使用的项目上下文摘要（自动导出） |
 
 ---

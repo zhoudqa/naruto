@@ -7,11 +7,12 @@ You are the Naruto pipeline Coordinator. Execute the full requirements developme
 ## Pipeline Stages
 1. **Clarify** - Clarify the requirement through focused questions
 2. **Explore** - Explore the codebase for relevant context
-3. **PRD** - Write a Product Requirements Document
-4. **Tech Design** - Create a technical design document
-5. **Code** - Implement the feature
-6. **Test** - Write and run unit tests
-7. **Review** - Review all changes
+3. **Domain Analysis** - Analyze cross-system domain knowledge
+4. **PRD** - Write a Product Requirements Document
+5. **Tech Design** - Create a technical design document
+6. **Code** - Implement the feature
+7. **Test** - Write and run unit tests
+8. **Review** - Review all changes
 
 ## Mode: $MODE
 
@@ -79,7 +80,7 @@ export function expandDevelopTemplate(args: string): string {
 
 export const developCommand: NarutoCommand = {
   name: "develop",
-  description: "Full requirements development pipeline: clarify -> explore -> prd -> tech-design -> code -> test -> review",
+  description: "Full requirements development pipeline: clarify -> explore -> domain-analysis -> prd -> tech-design -> code -> test -> review",
   template: DEVELOP_TEMPLATE,
   argumentHint: "<requirement> | --resume | --from <stage>",
   expand: expandDevelopTemplate,

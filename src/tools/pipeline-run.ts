@@ -15,13 +15,17 @@ export const pipelineRun: ToolDefinition = tool({
       .enum(["natural_language", "prd_markdown"])
       .describe("Input format: natural_language for free text, prd_markdown for structured PRD"),
     start_stage: tool.schema
-      .enum(["clarify", "explore", "prd", "tech-design", "code", "test", "review"])
+      .enum(["clarify", "explore", "domain-analysis", "prd", "tech-design", "code", "test", "review"])
       .optional()
       .describe("Stage to start from (default: clarify). Use to skip earlier stages."),
     skip_stages: tool.schema
-      .array(tool.schema.enum(["clarify", "explore", "prd", "tech-design", "code", "test", "review"]))
+      .array(tool.schema.enum(["clarify", "explore", "domain-analysis", "prd", "tech-design", "code", "test", "review"]))
       .optional()
       .describe("Stages to skip entirely."),
+    domain: tool.schema
+      .string()
+      .optional()
+      .describe("Business domain for domain knowledge analysis. If not provided, the coordinator will infer it."),
   },
   execute: async (args, context) => {
     const existing = loadState(context.directory)
@@ -42,6 +46,7 @@ export const pipelineRun: ToolDefinition = tool({
       config,
       context.directory,
       startStage,
+      args.domain as string | undefined,
     )
 
     const stagesList = Object.entries(state.stages)

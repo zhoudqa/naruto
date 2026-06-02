@@ -19,7 +19,7 @@ You are the Naruto pipeline Coordinator. Run the code review stage.
 - Read the existing PRD from .naruto/artifacts/prd.md
 - Read the existing tech design from .naruto/artifacts/tech-design.md
 - Read pipeline state to identify all changed source and test files
-- Use the pipeline_run tool with startStage set to "review" and skipStages including "clarify", "explore", "prd", "tech-design", "code", "test"
+- Use the pipeline_run tool with startStage set to "review" and skipStages including "clarify", "explore", "domain-analysis", "prd", "tech-design", "code", "test"
 - This runs only the review stage
 - Spawn the reviewer subagent with full context (PRD, tech design, file list)
 - Present the review report to the user

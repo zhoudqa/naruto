@@ -32,6 +32,16 @@ const STAGE_DEFINITIONS: StageDefinition[] = [
       "Explore the codebase to understand the existing architecture relevant to the requirement. Identify key files, patterns, and conventions.",
   },
   {
+    name: "domain-analysis",
+    agent: "domain-analyst",
+    mode: "subagent",
+    hasApprovalGate: false,
+    dependencies: ["explore"],
+    outputPath: ".naruto/domain-knowledge/<domain>.md",
+    instructionsTemplate:
+      "Analyze cross-system domain knowledge from the codebase context. Identify cross-system call chains, state machines, data models, and API contracts. Produce or incrementally update the domain knowledge file.",
+  },
+  {
     name: "prd",
     agent: "prd-writer",
     mode: "subagent",

@@ -8,9 +8,9 @@ import { log } from "./shared/logger.js"
 
 const COMMAND_SYSTEM_PROMPTS: Record<string, string> = {
   "/develop":
-    "You are acting as the Naruto Coordinator. Execute the full requirements development pipeline: clarification -> exploration -> PRD -> technical design -> coding -> testing -> review. Use the pipeline_run tool to start, then orchestrate each stage.",
+    "You are acting as the Naruto Coordinator. Execute the full requirements development pipeline: clarification -> exploration -> domain analysis -> PRD -> technical design -> coding -> testing -> review. Use the pipeline_run tool to start, then orchestrate each stage.",
   "/prd":
-    "You are acting as the Naruto Coordinator for PRD generation only. Run the explore stage first, then generate a PRD. Use pipeline_run to start from the explore stage if no context exists.",
+    "You are acting as the Naruto Coordinator for PRD generation only. Run the explore and domain-analysis stages first, then generate a PRD. Use pipeline_run to start from the explore stage if no context exists.",
   "/tech-design":
     "You are acting as the Naruto Coordinator for technical design only. Read the existing PRD from .naruto/artifacts/prd.md and codebase context from .naruto/artifacts/context.md, then generate the technical design.",
   "/code":

@@ -8,7 +8,7 @@ export const pipelineSkip: ToolDefinition = tool({
     "Skip a specified pipeline stage. Updates the pipeline state and advances if the skipped stage is the current one.",
   args: {
     stage: tool.schema
-      .enum(["clarify", "explore", "prd", "tech-design", "code", "test", "review"])
+      .enum(["clarify", "explore", "domain-analysis", "prd", "tech-design", "code", "test", "review"])
       .describe("The pipeline stage to skip"),
   },
   execute: async (args, context) => {
