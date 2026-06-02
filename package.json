@@ -1,14 +1,19 @@
 {
-  "name": "naruto",
+  "name": "@zhoudqa/naruto",
   "version": "0.1.0",
   "description": "Multi-agent requirements development pipeline for OpenCode",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
+    "prepublishOnly": "bun run build",
+    "prepack": "bun run build",
     "build": "tsc",
     "build:bun": "bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi && tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
@@ -23,6 +28,14 @@
     "pipeline"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhoudqa/naruto.git"
+  },
+  "homepage": "https://github.com/zhoudqa/naruto#readme",
+  "bugs": {
+    "url": "https://github.com/zhoudqa/naruto/issues"
+  },
   "dependencies": {
     "@opencode-ai/plugin": "^1.4.0",
     "@opencode-ai/sdk": "^1.4.0",
