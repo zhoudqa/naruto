@@ -74,15 +74,28 @@ After producing the requirement summary, identify the business domain:
 
 Dispatch subagents in sequence using the task tool. Each subagent receives context from previous stages.
 
+**Agent name mapping (use these exact values for \`subagent_type\`):**
+| Stage | subagent_type |
+|-------|--------------|
+| explore | \`naruto-explorer\` |
+| domain-analysis | \`naruto-domain-analyst\` |
+| prd | \`naruto-prd-writer\` |
+| tech-design | \`naruto-tech-designer\` |
+| code | \`naruto-coder\` |
+| test | \`naruto-tester\` |
+| review | \`naruto-reviewer\` |
+
+**Critical: ALWAYS omit \`task_id\` for normal stage dispatch to ensure each subagent gets a FRESH session.** Only pass \`task_id\` when explicitly instructed to continue a previous subagent dialogue (error recovery).
+
 **Stage sequence:**
 
-1. **explore** - Dispatch explorer subagent(s) to gather codebase context
+1. **explore** - Dispatch \`naruto-explorer\` subagent to gather codebase context
    - Provide the requirement summary as context.
    - If domain knowledge exists for the confirmed domain, include it to guide exploration.
    - The explorer writes its findings to \`.naruto/artifacts/context.md\`.
    - Wait for completion before proceeding.
 
-2. **domain-analysis** - Dispatch domain-analyst subagent (if a domain was confirmed)
+2. **domain-analysis** - Dispatch \`naruto-domain-analyst\` subagent (if a domain was confirmed)
    - Provide the requirement summary, domain name, context.md content.
     - If existing domain knowledge exists (\`~/.naruto/domain-knowledge/<domain>.md\`), include it for incremental update.
     - The domain-analyst writes/updates \`~/.naruto/domain-knowledge/<domain>.md\`.
@@ -93,28 +106,28 @@ Dispatch subagents in sequence using the task tool. Each subagent receives conte
      - This is best-effort — log any errors but do not block the pipeline.
    - If no domain was confirmed, skip this stage automatically.
 
-3. **prd** - Dispatch prd-writer subagent to generate PRD
+3. **prd** - Dispatch \`naruto-prd-writer\` subagent to generate PRD
    - Provide requirement summary + content of context.md + domain knowledge (if available).
    - The prd-writer writes to \`.naruto/artifacts/prd.md\`.
    - If approval gate is configured, go to Phase 3 after this stage.
 
-4. **tech-design** - Dispatch tech-designer subagent
+4. **tech-design** - Dispatch \`naruto-tech-designer\` subagent
    - Provide content of prd.md + context.md + domain knowledge (if available).
    - The tech-designer writes to \`.naruto/artifacts/tech-design.md\`.
    - If approval gate is configured, go to Phase 3 after this stage.
 
-5. **code** - Dispatch coder subagent
+5. **code** - Dispatch \`naruto-coder\` subagent
    - Provide content of tech-design.md + context.md + prd.md + domain knowledge (if available).
    - The coder writes source files in the user's project.
    - No approval gate. Auto-proceed.
 
-6. **test** - Dispatch tester subagent
+6. **test** - Dispatch \`naruto-tester\` subagent
    - Provide content of tech-design.md + list of changed source files.
    - The tester writes and runs test files.
    - No approval gate. Auto-proceed.
    - If tests fail, decide: retry coder (once) or report to user.
 
-7. **review** - Dispatch reviewer subagent
+7. **review** - Dispatch \`naruto-reviewer\` subagent
    - Provide all changed files + tech-design.md + prd.md + domain knowledge (if available).
    - The reviewer writes to \`.naruto/artifacts/review.md\`.
    - Present review summary to user.
@@ -126,14 +139,14 @@ When dispatching a subagent, include in the task prompt:
 - Clear instructions about expected output format and location
 - Any user feedback from approval gate rejections
 
-**Subagent model selection:**
-- explorer: Use a cost-efficient model (fast, read-only work)
-- domain-analyst: Use a strong reasoning model (cross-system analysis is complex)
-- prd-writer: Use the default model
-- tech-designer: Use a strong reasoning model
-- coder: Use the default model
-- tester: Use the default model
-- reviewer: Use a strong reasoning model
+**Subagent model selection (pass \`model\` parameter when dispatching):**
+- naruto-explorer: Use a cost-efficient model (fast, read-only work)
+- naruto-domain-analyst: Use a strong reasoning model (cross-system analysis is complex)
+- naruto-prd-writer: Use the default model
+- naruto-tech-designer: Use a strong reasoning model
+- naruto-coder: Use the default model
+- naruto-tester: Use the default model
+- naruto-reviewer: Use a strong reasoning model
 
 ### Phase 3: Approval Gates
 
@@ -250,4 +263,6 @@ Users may invoke individual stages via commands like /prd, /code, etc.:
 6. ALWAYS preserve user feedback when re-dispatching subagents.
 7. NEVER modify source code yourself. Delegate all code changes to the coder subagent.
 8. ALWAYS maintain pipeline state consistency.
+9. ALWAYS omit \`task_id\` when dispatching a new stage — each stage MUST run in a fresh subagent session. Only pass \`task_id\` for error recovery (continuing a previous subagent dialogue).
+10. ALWAYS pass the correct \`subagent_type\` from the agent name mapping table above. Never omit it or use a wrong value, otherwise the platform may fall back to the default agent and reuse its session.
 `
